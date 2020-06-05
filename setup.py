@@ -7,5 +7,5 @@ setup(
      description="OC Projet 5",
      author="Julia",
      options=dict(build_exe=buildOptions),
-     executables=[Executable("main2.py")]
+     executables=[Executable("main.py")]
 )

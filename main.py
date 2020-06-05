@@ -1,5 +1,8 @@
 import os
 import time
+import keyboard
+import sys
+
 
 categories = {1: "Saucisson",
               2: "Fromage",
@@ -17,16 +20,23 @@ def welcome_message():
 
 
 def choose_category():
-    number = input("Quel est votre choix ? ")
-    number = int(number) # Pourquoi devoir préciser int
+    choice = input("Quel est votre choix ? ")
+    """if isinstance(choice, int):
+        number = int(choice)
+    string = str(choice)
+    print(type(choice))"""
+    number = int(choice) # Pourquoi mettre int ?
     # possible_choices = [1, 2, 3]
     possible_choices = [i for i in range(1, len(categories)+1)] # pourquoi mettre +1 ?
     if number in possible_choices:
         choose_product(number)
+    elif choice == 'q': # 'q' n'est pas un int
+        sys.exit()
     else:
         print(f"Veuillez choisir un nombre entre {len(categories) - (len(categories) - 1 )} et {len(categories)}.")
         choose_category()
     print(possible_choices)
+
 
 def choose_product(n):
     print(f"Vous avez choisi {categories[n]}.")
