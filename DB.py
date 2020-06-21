@@ -1,10 +1,12 @@
-import mysql.connector
+from peewee import *
 
-connection = mysql.connector.connect(host='127.0.0.1',
-                                         database='mydb',
-                                         user='julia',
-                                         password='julia')
-cursor = cursor = connection.cursor()
+mysql_db = MySQLDatabase('oc5', user='root', password='93wnxbcv',
+                         host='127.0.0.1', port=3306)
 
-result = cursor.execute(""" SELECT product_id FROM product""")
-print(result)
+class BaseModel(Model):
+    """A base model that will use our MySQL database"""
+    class Meta:
+        database = mysql_db
+
+class User(BaseModel):
+    username = CharField()hy
