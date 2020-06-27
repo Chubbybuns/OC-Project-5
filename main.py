@@ -1,7 +1,6 @@
 import os
 import time
-import keyboard
-import sys
+from sys import exit
 
 
 categories = {1: "Saucisson",
@@ -16,6 +15,7 @@ def welcome_message():
 
     for number, item in categories.items():
         print(f"{number}.{item}")
+    print("\nEntrez 'Q' pour quitter")
     choose_category()
 
 
@@ -25,17 +25,16 @@ def choose_category():
         number = int(choice)
     string = str(choice)
     print(type(choice))"""
-    number = int(choice) # Pourquoi mettre int ?
     # possible_choices = [1, 2, 3]
-    possible_choices = [i for i in range(1, len(categories)+1)] # pourquoi mettre +1 ?
+    if choice.lower() == 'q':
+        exit(0)
+    possible_choices = [i for i in range(1, len(categories)+1)]
+    number = int(choice)
     if number in possible_choices:
         choose_product(number)
-    elif choice == 'q': # 'q' n'est pas un int
-        sys.exit()
     else:
         print(f"Veuillez choisir un nombre entre {len(categories) - (len(categories) - 1 )} et {len(categories)}.")
         choose_category()
-    print(possible_choices)
 
 
 def choose_product(n):
