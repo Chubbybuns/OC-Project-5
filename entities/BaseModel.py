@@ -1,4 +1,4 @@
-from peewee import *
+from peewee import Model, MySQLDatabase
 from secrets import user, password
 
 mysql_db = MySQLDatabase('oc5', user=user, password=password,

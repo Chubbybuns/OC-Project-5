@@ -1,13 +1,15 @@
 from peewee import *
-from . import BaseModel, Category
+from .BaseModel import BaseModel
+from .Category import Category
 
 
 class Product(BaseModel):
-    id = AutoField(null=True, primary_key=True)
+    id = AutoField(primary_key=True)
     category_id = ForeignKeyField(Category, backref='Products')
-    name = CharField(null=True)
+    name = CharField()
     description = TextField()
-    nutriscore = IntegerField()
+    nutriscore = CharField()
     country = CharField()
-    store = TextField()
+    store = TextField(null=True)
     link = TextField()
+
