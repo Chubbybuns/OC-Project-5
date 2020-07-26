@@ -5,9 +5,6 @@ from entities import Category, Product, Saved_product
 mysql_db = MySQLDatabase('oc5', user=user, password=password,
                          host='127.0.0.1', port=3306)
 
-
-# Category.create(Category_name='Saucisson')
-
 mysql_db.connect()
 
 Saved_product.drop_table()

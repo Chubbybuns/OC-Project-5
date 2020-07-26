@@ -13,3 +13,5 @@ class Product(BaseModel):
     store = TextField(null=True)
     link = TextField()
 
+    def __str__(self):
+        return self.name + "(" + self.nutriscore + ")"
