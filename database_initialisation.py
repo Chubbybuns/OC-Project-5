@@ -11,10 +11,8 @@ Saved_product.drop_table()
 Product.drop_table()
 Category.drop_table()
 
-
 mysql_db.create_tables([Category, Product, Saved_product])
 
-"""Category.get(Category.id == 1)"""
 categories = Category.select()
 for category in categories:
     print(category.name)

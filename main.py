@@ -1,63 +1,62 @@
-import os
 import time
 from sys import exit
 from entities import Category, Product, Saved_product
 import random
+
+
+class NotANumberError(Exception):
+    pass
+
+
+class NumberNotInRangeError(Exception):
+    pass
+
 
 categories = Category.select()
 saved_products = Saved_product.select()
 
 
 def welcome_message():
-    # os.system('cls')
     print("Bienvenue dans l'application qui transformera votre assiette.")
-    print("Veuillez choisir la catégorie de l'aliment que vous voulez substituer dans la liste ci-dessous.")
-    display_categories()
-    """choice = input("Pour voir les produits de substitution enregistrés, entrez 'V'")
-    if choice.lower() == 'v':
-        view_saved_products()"""
 
 
 def view_saved_products():
+
     for saved_product in saved_products:
-        print(f"You substitued {Saved_product.substitued.name} with {Saved_product.substitute.name}")
+        print(f"You substitued {saved_product.substitued.name} with {saved_product.substitute.name}")
 
 
 def display_categories():
+    print("Veuillez choisir la catégorie de l'aliment que vous voulez substituer dans la liste ci-dessous.")
     count = 0
     for category in categories:
         count += 1
         print(f"{count}. {category.name}")
     print("\nEntrez 'Q' pour quitter \nPour voir les produits de substitution enregistrés, entrez 'V'")
-    choose_category()
 
 
-def choose_category():
+def choose_first_option():
+    possible_choices = [i for i in range(1, len(categories) + 1)]
     choice = input("Quel est votre choix ? ")
     if choice.lower() == 'q':
         exit(0)
     elif choice.lower() == 'v':
         view_saved_products()
-    possible_choices = [i for i in range(1, len(categories)+1)]
-
-    # Si l'input n'est pas un nombre
-    try:
-        number = int(choice)
-    except ValueError:
-        print(f"Veuillez choisir un nombre entre {len(categories) - (len(categories) - 1)} et {len(categories)}.")
-        choose_category()
-
-    if number in possible_choices:
-        category, products, number_of_products = get_products_from_category(number)
-        display_products_from_category(category, products, number_of_products)
-        product = choose_product(category.id)
-        substitute = get_substitute(category.id, product)
-        if substitute is None:
-            print("Je n'ai pas trouvé de produit de substitution. Désolé. :^(")
+        return None
     else:
-        # Si l'input est un nombre hors fourchette
-        print(f"Veuillez choisir un nombre entre {len(categories) - (len(categories) - 1 )} et {len(categories)}.")
-        choose_category()
+        # Si l'input n'est pas un nombre
+        try:
+            number = int(choice)
+        except ValueError:
+            print(f"Veuillez choisir un nombre entre {len(categories) - (len(categories) - 1)} et {len(categories)}.")
+            raise NotANumberError()
+
+        if number not in possible_choices:
+            # Si l'input est un nombre hors fourchette
+            print(f"Veuillez choisir un nombre entre {len(categories) - (len(categories) - 1)} et {len(categories)}.")
+            raise NumberNotInRangeError()
+
+        return number
 
 
 def get_products_from_category(number):
@@ -88,13 +87,14 @@ def choose_product(category_id):
         number = int(choice)
     except ValueError:
         print(f"Veuillez choisir un nombre entre {len(products) - (len(products) - 1)} et {len(products)}.")
-        choose_product(number)
-    if number in possible_choices:
-        product = products[number - 1]
+        product = choose_product(category_id)
         return product
+    if number not in possible_choices:
+        print(f"Veuillez choisir un nombre entre {len(products) - (len(products) - 1)} et {len(products)}.")
+        product = choose_product(category_id)
     else:
-        print(f"Veuillez choisir un nombre entre {len(products) - (len(products) - 1 )} et {len(products)}.")
-        choose_product(number)
+        product = products[number - 1]
+    return product
 
 
 def get_substitute(category_id, substitued_product):
@@ -107,15 +107,16 @@ def get_substitute(category_id, substitued_product):
         substitute_product = random.choice(potential_subsitute_products)
     except IndexError:
         return None
-    print(f"Je vous propose de substituer {substitued_product} par {substitute_product}.")
     return substitute_product
     # print toutes les caractéristiques du substitut
 
+
+def display_substitute(substitute_product, substitued_product, number):
     print(f"Je vous propose de substituer {substitued_product.name} par {substitute_product.name}")
     choice = input("Voulez-vous sauvegarder ce produit ? O/N")
-    if choice == "O":
+    if choice.lower() == "O":
         print("Produit sauvegardé")
-    if choice == "N":
+    elif choice.lower() == "N":
         print("Produit non sauvegardé")
         product = Saved_product(category_id=number,
                                 substitute=substitute_product.id,
@@ -129,8 +130,26 @@ def get_substitute(category_id, substitued_product):
 
 def main():
     welcome_message()
-    display_categories()
-    choose_category()
+    while True:
+        display_categories()
+
+        try:
+            number = choose_first_option()
+        except NotANumberError:
+            number = choose_first_option()
+        except NumberNotInRangeError:
+            number = choose_first_option()
+
+        if number is not None:
+            category, products, number_of_products = get_products_from_category(number)
+            display_products_from_category(category, products, number_of_products)
+            product = choose_product(category.id)
+            substitute_product = get_substitute(category.id, product)
+            if substitute_product is None:
+                print("Je n'ai pas trouvé de produit de substitution. Désolé. :^(")
+            else:
+                display_substitute(substitute_product, product, category.id)
 
 
-welcome_message()
+main()
+
