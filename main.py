@@ -2,6 +2,7 @@ import time
 from sys import exit
 from entities import Category, Product, Saved_product
 import random
+from prettytable import PrettyTable
 
 
 class NotANumberError(Exception):
@@ -21,9 +22,17 @@ def welcome_message():
 
 
 def view_saved_products():
+    saved_products_table = PrettyTable()
 
+    saved_products_table.field_names = ["Substitued product name",
+                                        "Substitued product link",
+                                        "Substitute product name",
+                                        "Substitute link",
+                                        "Date"]
     for saved_product in saved_products:
-        print(f"You substitued {saved_product.substitued.name} with {saved_product.substitute.name}")
+        saved_products_table.add_row([saved_product.substitute.name, saved_product.substitute.link,
+                                      saved_product.substitued.name, saved_product.substitued.link, saved_product.date])
+    print(saved_products_table)
 
 
 def display_categories():
@@ -112,20 +121,41 @@ def get_substitute(category_id, substitued_product):
 
 
 def display_substitute(substitute_product, substitued_product, number):
-    print(f"Je vous propose de substituer {substitued_product.name} par {substitute_product.name}")
+    print(f"\n\nJe vous propose de substituer {substitued_product.name} par {substitute_product.name} :")
+    products_table = PrettyTable()
+    products_table.field_names = ["Product name",
+                                  "Description",
+                                  "Nutriscore",
+                                  "Country",
+                                  "Link"]
+
+    products_table.add_row([substitued_product.name, substitued_product.description, substitued_product.nutriscore,
+                            substitued_product.country, substitued_product.link])
+    products_table.add_row([substitute_product.name, substitute_product.description, substitute_product.nutriscore,
+                            substitute_product.country, substitute_product.link])
+    print(products_table)
     choice = input("Voulez-vous sauvegarder ce produit ? O/N")
-    if choice.lower() == "O":
-        print("Produit sauvegardé")
-    elif choice.lower() == "N":
-        print("Produit non sauvegardé")
+    if choice.lower() == "o":
         product = Saved_product(category_id=number,
                                 substitute=substitute_product.id,
                                 substitued=substitued_product.id)
         product.save()
+        print("Produit sauvegardé !")
+    elif choice.lower() == "n":
+        print("Produit non sauvegardé")
     elif choice.lower() == "q":
         exit(0)
     else:
         print("Veuillez entre 'O' ou 'N'")
+
+
+"""def catch_errors():
+    try:
+        number = choose_first_option()
+    except NotANumberError:
+        number = choose_first_option()
+    except NumberNotInRangeError:
+        number = choose_first_option()"""
 
 
 def main():
