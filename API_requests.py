@@ -2,9 +2,9 @@ import requests
 from entities import Category, Product
 
 
-NUMBER_OF_CATEGORIES = 10
-MINIMUM_OF_PRODUCTS_IN_CATEGORY = 3
-NUMBER_OF_PRODUCTS = 5
+NUMBER_OF_CATEGORIES = 20
+MINIMUM_OF_PRODUCTS_IN_CATEGORY = 5
+NUMBER_OF_PRODUCTS = 10
 
 
 def get_categories_and_products():
