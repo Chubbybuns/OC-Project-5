@@ -1,6 +1,7 @@
 import time
 from sys import exit
-from entities import Category, Product, Saved_product
+from os import system, name
+from entities import Category, Product, Saved_product # A VIRER et faire des appels avec requests
 import random
 from prettytable import PrettyTable
 
@@ -15,6 +16,11 @@ class NumberNotInRangeError(Exception):
 
 categories = Category.select()
 saved_products = Saved_product.select()
+
+
+def clear():
+    if name == 'nt':
+        _ = system('cls')
 
 
 def welcome_message():
@@ -141,35 +147,29 @@ def display_substitute(substitute_product, substitued_product, number):
                                 substitued=substitued_product.id)
         product.save()
         print("Produit sauvegardé !")
+        time.sleep(3)
     elif choice.lower() == "n":
         print("Produit non sauvegardé")
+        time.sleep(3)
     elif choice.lower() == "q":
         exit(0)
     else:
         print("Veuillez entre 'O' ou 'N'")
 
 
-"""def catch_errors():
-    try:
-        number = choose_first_option()
-    except NotANumberError:
-        number = choose_first_option()
-    except NumberNotInRangeError:
-        number = choose_first_option()"""
-
-
 def main():
     welcome_message()
     while True:
+        clear()
         display_categories()
-
         try:
             number = choose_first_option()
         except NotANumberError:
-            number = choose_first_option()
+            number = None
+            clear()
         except NumberNotInRangeError:
-            number = choose_first_option()
-
+            number = None
+            clear()
         if number is not None:
             category, products, number_of_products = get_products_from_category(number)
             display_products_from_category(category, products, number_of_products)
@@ -177,6 +177,7 @@ def main():
             substitute_product = get_substitute(category.id, product)
             if substitute_product is None:
                 print("Je n'ai pas trouvé de produit de substitution. Désolé. :^(")
+                time.sleep(3)
             else:
                 display_substitute(substitute_product, product, category.id)
 

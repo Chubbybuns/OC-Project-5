@@ -36,7 +36,6 @@ def get_categories_and_products():
             if not all(tag in p for tag in ("product_name", "ingredients_text", "nutrition_grades", "countries",
                                             "stores", "url")):
                 pass
-
             else:
                 product = Product(category_id=category.id,
                                   name=p["product_name"],

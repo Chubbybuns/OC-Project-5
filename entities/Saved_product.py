@@ -7,7 +7,6 @@ import datetime
 
 class Saved_product(BaseModel):
     id = AutoField(primary_key=True)
-    category_id = ForeignKeyField(Category, backref='Category')
     substitute = ForeignKeyField(Product, backref='Substitute')
     substitued = ForeignKeyField(Product, backref='Substitued')
     date = DateTimeField(default=datetime.datetime.now)
