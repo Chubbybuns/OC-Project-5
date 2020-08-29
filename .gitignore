@@ -1,8 +1,7 @@
 .idea/
-secrets.py
 *.mwb
 *.mwb.bak
-
+.env
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -10,7 +9,7 @@ __pycache__/
 
 # C extensions
 *.so
-
+.env.local
 # Distribution / packaging
 .Python
 build/
