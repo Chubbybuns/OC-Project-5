@@ -50,11 +50,11 @@ def get_products_from_category(category_id):
     return Response("incorrect category id", status=404)
 
 
-@app.route('/api/categories/<int:category_id>/products/<int:product_id>', methods=["GET"])
-def get_substitute(category_id, product_id):
-    category_id_exists = Category.select().where(Category.id == category_id).get()
-    product_id_exists = Product.select().where(Product.id == product_id).get()
-    if category_id_exists is not None and product_id_exists is not None:
+@app.route('/api/substitute_product/<int:product_id>', methods=["GET"])
+def get_substitute(product_id):
+    product = Product.select().where(Product.id == product_id).get()
+    if product is not None:
+        category_id = product.category_id
         substitued_product = Product.select().where(Product.id == product_id).get()
         potential_subsitute_products = Product.select().where(
             (Product.category_id == category_id) &
@@ -63,8 +63,6 @@ def get_substitute(category_id, product_id):
             return Response("Could not find a substitute product", status=400)
         substitute_product = random.choice(potential_subsitute_products)
         return response_as_json({"substitute": model_to_dict(substitute_product)})
-    elif category_id_exists is None and product_id_exists is not None:
-        return Response("Incorrect category ID", status=404)
     else:
         return Response("Incorrect product ID", status=404)
 
