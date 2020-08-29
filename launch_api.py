@@ -52,8 +52,9 @@ def get_products_from_category(category_id):
 
 @app.route('/api/substitute_product/<int:product_id>', methods=["GET"])
 def get_substitute(product_id):
-    product = Product.select().where(Product.id == product_id).get()
-    if product is not None:
+    products = Product.select().where(Product.id == product_id)
+    if len(products) > 0:
+        product = products.get()
         category_id = product.category_id
         substitued_product = Product.select().where(Product.id == product_id).get()
         potential_subsitute_products = Product.select().where(
