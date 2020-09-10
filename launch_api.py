@@ -4,15 +4,8 @@ from playhouse.shortcuts import model_to_dict
 import random
 import json
 
-
-# TODO : Ycréer db.py + import dans db initialisation
-# TODO : YAPI_request --> populate_database.py
-# TODO : Ynouvelle syntaxe pour les réponses --> fonction return_json()
-# TODO : Yretourner directement une liste au lieu d'un dictionnaire
-# TODO : YDate time en json serializable
-# TODO : Base de données sur free.fr ? --> plus rapide
-# TODO : Heroku: mettre API
 # TODO : modifier main.py avec les endpoints de l'api
+# TODO : compiler main.py
 
 
 app = Flask(__name__)
