@@ -4,7 +4,7 @@ from os import system, name
 from prettytable import PrettyTable
 import requests
 
-# TODO: view_saved_products()
+# TODO: view_saved_products() pourquoi ?
 # TODO: get_substitute_from_api()
 
 
@@ -77,12 +77,23 @@ def view_saved_products():
         substitute_id = saved_product["substitute"]
         substitued_id = saved_product["substitued"]
         date = saved_product["date"]
+        substitute = False
+        substitued = False
         for category in categories:
-            if substitute_id == category["id"]:     # ???
-                pass
-        saved_products_table.add_row([substitute_id.name, substitute_id.link,
-                                      substitued_id.name, substitued_id.link,
-                                      date])
+            products = get_products_from_category_from_api(category["id"])
+            for product in products:
+                if product["id"] == substitued_id:
+                    substitued_product = product
+                    substitute = True
+                elif product["id"] == substitute_id:
+                    substitute_product = product
+                    substitued = True
+            if substitued and substitute:
+                saved_products_table.add_row([substitute_product["name"], substitute_product["link"],
+                                              substitued_product["name"], substitued_product["link"],
+                                              date])
+                break
+        break
     print(saved_products_table)
 
 
@@ -236,7 +247,7 @@ def main():
                 display_substitute(substitute_product, product, category["id"])
 
 
-main()
+#main()
 
 #category, products, number_of_products = get_products_from_category(6)
 #display_products_from_category(category, products, number_of_products)
@@ -245,5 +256,5 @@ main()
 #substitute_product = get_substitute(product)
 #print(substitute_product)
 
-
+# view_saved_products()
 get_substitute_from_api(121)
