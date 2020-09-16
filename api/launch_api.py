@@ -1,5 +1,5 @@
 from flask import Flask, request, Response
-from entities import Category, Product, Saved_product
+from db.entities import Category, Product, Saved_product
 from playhouse.shortcuts import model_to_dict
 import random
 import json
@@ -78,7 +78,7 @@ def save_product():
 
 @app.route('/api/saved_products/', methods=["GET"])
 def get_saved_products():
-    saved_products = Saved_product.select()
+    saved_products = Product.select().join(Saved_product).where(Saved_product.substitute == Product.id)
     saved_products_as_dict = list(saved_products.dicts())
     return response_as_json(saved_products_as_dict)
 

@@ -1,5 +1,5 @@
-from entities import Category, Product, Saved_product
-from db import mysql_db
+from .entities import Category, Product, Saved_product
+from .db import mysql_db
 
 mysql_db.connect()
 

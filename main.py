@@ -4,8 +4,11 @@ from os import system, name
 from prettytable import PrettyTable
 import requests
 
-# TODO: view_saved_products() pourquoi ?
-# TODO: get_substitute_from_api()
+
+# TODO: réorganiser le projet : dossiers api, bd avec entities et les 2 fichiers, front (fichier requêtes api, display..)
+# TODO: welcomemessage pas gênant
+# TODO: get_saved_product() avec jointure product avec saved_product
+# TODO: lydia
 
 
 class NotANumberError(Exception):
@@ -39,8 +42,10 @@ def get_products_from_category_from_api(category_id):
 
 
 def get_substitute_from_api(product_id):
-    url_substitute = "https://foodapi2020.herokuapp.com/api/substitute_product/" + str(product_id) + "/"
+    url_substitute = "https://foodapi2020.herokuapp.com/api/substitute_product/" + str(product_id)
     response = requests.request("GET", url_substitute)
+    if response.status_code == 404:
+        return None
     response_as_json = response.json()
     substitute = response_as_json["substitute"]
     return substitute
@@ -77,23 +82,23 @@ def view_saved_products():
         substitute_id = saved_product["substitute"]
         substitued_id = saved_product["substitued"]
         date = saved_product["date"]
-        substitute = False
-        substitued = False
+        substitued_product = None
+        substitute_product = None
         for category in categories:
             products = get_products_from_category_from_api(category["id"])
             for product in products:
                 if product["id"] == substitued_id:
                     substitued_product = product
-                    substitute = True
                 elif product["id"] == substitute_id:
                     substitute_product = product
-                    substitued = True
-            if substitued and substitute:
-                saved_products_table.add_row([substitute_product["name"], substitute_product["link"],
-                                              substitued_product["name"], substitued_product["link"],
-                                              date])
+                if substitued_product is not None and substitute_product is not None:
+                    saved_products_table.add_row([substitute_product["name"], substitute_product["link"],
+                                                  substitued_product["name"], substitued_product["link"],
+                                                  date])
+                    break
+            if substitued_product is not None and substitute_product is not None:
                 break
-        break
+
     print(saved_products_table)
 
 
@@ -115,6 +120,10 @@ def choose_first_option():
         exit(0)
     elif choice.lower() == 'v':
         view_saved_products()
+        #time.sleep(5)
+        continue_choice = input("Appuyez sur une touche pour continuer ou sur Q pour quitter")
+        if continue_choice.lower() == 'q':
+            exit(0)
         return None
     else:
         # Si l'input n'est pas un nombre
@@ -179,20 +188,9 @@ def choose_product(category_id):
 def get_substitute(substitued_product_id):
     substitute = get_substitute_from_api(substitued_product_id)
     return substitute
-"""    # select un random produit parmi les produits restants de la catégorie
-    potential_subsitute_products = Product.select().where(
-        (Product.category_id == category_id) &
-        (Product.nutriscore < substitued_product.nutriscore)
-    )
-    try:
-        substitute_product = random.choice(potential_subsitute_products)
-    except IndexError:
-        return None
-    return substitute_product
-    # print toutes les caractéristiques du substitut"""
 
 
-def display_substitute(substitute_product, substitued_product, category_id):
+def display_substitute(substitute_product, substitued_product):
     substitued_product_name = substitued_product["name"]
     substitute_product_name = substitute_product["name"]
     print(f"\n\nJe vous propose de substituer {substitued_product_name} par {substitute_product_name} :")
@@ -224,6 +222,7 @@ def display_substitute(substitute_product, substitued_product, category_id):
 
 def main():
     welcome_message()
+    time.sleep(3)
     while True:
         clear()
         display_categories()
@@ -244,17 +243,7 @@ def main():
                 print("Je n'ai pas trouvé de produit de substitution. Désolé. :^(")
                 time.sleep(3)
             else:
-                display_substitute(substitute_product, product, category["id"])
+                display_substitute(substitute_product, product)
 
 
-#main()
-
-#category, products, number_of_products = get_products_from_category(6)
-#display_products_from_category(category, products, number_of_products)
-#product = choose_product(category["id"])
-#print(product)
-#substitute_product = get_substitute(product)
-#print(substitute_product)
-
-# view_saved_products()
-get_substitute_from_api(121)
+main()

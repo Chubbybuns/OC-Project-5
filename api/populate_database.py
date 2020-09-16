@@ -1,5 +1,5 @@
 import requests
-from entities import Category, Product
+from db.entities import Category, Product
 
 
 NUMBER_OF_CATEGORIES = 20
