@@ -1,6 +1,5 @@
 from peewee import *
 from .BaseModel import BaseModel
-from .Category import Category
 from .Product import Product
 import datetime
 
