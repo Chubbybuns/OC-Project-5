@@ -5,10 +5,8 @@ from prettytable import PrettyTable
 import requests
 
 
-# TODO: réorganiser le projet : dossiers api, bd avec entities et les 2 fichiers, front (fichier requêtes api, display..)
-# TODO: welcomemessage pas gênant
-# TODO: get_saved_product() avec jointure product avec saved_product
-# TODO: lydia
+# TODO: créer un installateur
+# TODO: finir view_saved_products() + trouver objectif projet javascript
 
 
 class NotANumberError(Exception):
@@ -76,28 +74,12 @@ def view_saved_products():
                                         "Substitued product link",
                                         "Substitute product name",
                                         "Substitute link",
-                                        "Date"]
-    categories = get_categories_from_api()
-    for saved_product in saved_products:
-        substitute_id = saved_product["substitute"]
-        substitued_id = saved_product["substitued"]
-        date = saved_product["date"]
-        substitued_product = None
-        substitute_product = None
-        for category in categories:
-            products = get_products_from_category_from_api(category["id"])
-            for product in products:
-                if product["id"] == substitued_id:
-                    substitued_product = product
-                elif product["id"] == substitute_id:
-                    substitute_product = product
-                if substitued_product is not None and substitute_product is not None:
-                    saved_products_table.add_row([substitute_product["name"], substitute_product["link"],
+                                        "Date",
+                                        "Category"]
+
+    saved_products_table.add_row([substitute_product["name"], substitute_product["link"],
                                                   substitued_product["name"], substitued_product["link"],
                                                   date])
-                    break
-            if substitued_product is not None and substitute_product is not None:
-                break
 
     print(saved_products_table)
 

@@ -4,9 +4,6 @@ from playhouse.shortcuts import model_to_dict
 import random
 import json
 
-# TODO : modifier main.py avec les endpoints de l'api
-# TODO : compiler main.py
-
 
 app = Flask(__name__)
 
@@ -78,9 +75,17 @@ def save_product():
 
 @app.route('/api/saved_products/', methods=["GET"])
 def get_saved_products():
-    saved_products = Product.select().join(Saved_product).where(Saved_product.substitute == Product.id)
-    saved_products_as_dict = list(saved_products.dicts())
-    return response_as_json(saved_products_as_dict)
+    Substitute = Product.alias()
+    Substitued = Product.alias()
+    saved_products_with_category = Saved_product.select(Saved_product.date, Substitute.name.alias("substitute_name"),
+                                                        Substitute.link.alias("substitute_link"),
+                                                        Substitued.name.alias("substitued_name"),
+                                                        Substitued.link.alias("substitued_link"),
+                                                        Category.name.alias("category_name"))\
+        .join(Substitute, on=(Saved_product.substitute == Substitute.id))\
+        .join(Substitued, on=(Saved_product.substitued == Substitued.id))\
+        .join(Category, on=(Substitued.category_id == Category.id))
+    return response_as_json({"saved_products_list": list(saved_products_with_category.dicts())})
 
 
 if __name__ == "__main__":
