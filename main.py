@@ -68,18 +68,19 @@ def welcome_message():
 
 
 def view_saved_products():
-    saved_products_table = PrettyTable()
     saved_products = get_saved_products_from_api()
+    saved_products = saved_products["saved_products_list"]
+    saved_products_table = PrettyTable()
     saved_products_table.field_names = ["Substitued product name",
                                         "Substitued product link",
                                         "Substitute product name",
                                         "Substitute link",
-                                        "Date",
-                                        "Category"]
-
-    saved_products_table.add_row([substitute_product["name"], substitute_product["link"],
-                                                  substitued_product["name"], substitued_product["link"],
-                                                  date])
+                                        "Category",
+                                        "Date"]
+    for saved_products_pair in saved_products:
+        saved_products_table.add_row([saved_products_pair["substitued_name"], saved_products_pair["substitued_link"],
+                                      saved_products_pair["substitute_name"], saved_products_pair["substitute_link"],
+                                      saved_products_pair["category_name"], saved_products_pair["date"]])
 
     print(saved_products_table)
 
