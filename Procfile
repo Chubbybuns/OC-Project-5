@@ -1,1 +1,1 @@
-web: gunicorn api\launch_api:app
+web: gunicorn api.launch_api:app
